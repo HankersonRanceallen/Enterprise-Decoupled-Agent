@@ -1,36 +1,290 @@
 # Enterprise-Decoupled-Agent
-🚀 Enterprise-Grade AI Agent: Stateful Memory & Multi-Step Tool ChainingA production-adjacent, lightweight AI Agent built using the native Google GenAI SDK and ready to run out-of-the-box in a Jupyter Notebook (Google Colab, AWS SageMaker, or local workspace).This project moves beyond simple "stateless LLM prompts" to demonstrate three core principles of enterprise AI engineering: State Stateful Conversational Memory, Autonomous Multi-Step Tool Chaining, and Database-Layer Decoupling for resource optimization.💡 System Architecture & The "Production Gap"Most beginner AI agent tutorials showcase basic tool usage but fail standard enterprise validation because they suffer from Amnesia (forgetting context across turns) or Resource Inefficiency (making redundant, expensive API calls for information they were already handed).This architecture implements a decoupled approach to fix these limitations:     
 
-                  ┌──────────────────────────────────────────────┐
-                  │                 USER INPUT                   │
-                  └──────────────────────┬───────────────────────┘
-                                         │
-                                         ▼
-                  ┌──────────────────────────────────────────────┐
-                  │       DATABASE MOCK / RESILIENT STATE        │
-                  │   (Simulating external SQLite/Redis layer)   │
-                  └──────────────────────┬───────────────────────┘
-                                         │ Injection of State
-                                         ▼
-                                         
-  ┌─────────────────────────────────────────────────────────────────────────────────┐
-  │                           GEMINI RUNTIME LAYER (LLM)                            │
-  │                                                                                 │
-  │   🧠 Context History Window           ⚙️ Internal Autonomous Routing           │
-  │   (Maintains Turn-by-Turn Memory)      (Chains Search ──> Climate Metrics)      │
-  └────────────────────────────────────────┬────────────────────────────────────────┘
-                                           │
-                                           ▼
-                                          
-                   ┌──────────────────────────────────────────────┐
-                   │        INFRASTRUCTURE / CLOUD TOOLS          │
-                   │     (Executes APIs *only* when needed)       │
-                   └──────────────────────────────────────────────┘
+## Enterprise-Grade AI Agent with Stateful Memory & Multi-Step Tool Chaining
 
-                  
-Key Architectural Validations Demonstrated:The Umbrella/Sunglasses Test: The agent retains conversational history natively. If asked about what to wear based on a previous weather tool execution, it draws from its internal context window rather than re-triggering the external API—saving compute power and avoiding rate limits.The Comparative Memory Test: The agent can manage multiple data nodes over a timeline (e.g., pulling metrics for Paris, then Tokyo) and perform cross-context comparative analysis natively without invoking any additional tool overhead.Decoupled System State: Implements a localized DATABASE_MOCK memory repository tracking transaction entities (last_city_searched), mimicking how an industrial microservice syncs with a Redis cache or an SQLite instance to ensure persistence beyond runtime engine lifecycles.🛠️ Tech Stack & ServicesCore Runtime Model: gemini-2.5-flashAgent Engine: Google GenAI Python SDK (google-genai)Infrastructure Interface: Open-Meteo Cloud System API (Keyless Geocoding & Climate Engine)Development Workspace: Jupyter Notebook / IPython Pipeline🚀 Getting Started (Notebook Setup)1. InstallationRun the following block inside your notebook to pull down dependencies:Bashpip install google-genai requests
-Environment VerificationEnsure your model endpoint is authenticated. If running in Google Colab, navigate to the "Secrets" (key icon) tab on the left panel, add a secret named GEMINI_API_KEY, and enable Notebook access.3. Execution Execution FlowsOpen and run enterprise_decoupled_agent.ipynb. The runtime script is broken down into four digestible stages:  Dependency MountsInfrastructure Tool Definitions (Mapping type hints and functional docstrings for model compilation)Persistent Session Context Init (Spinning up stateful routing loops)Validation Test Stack🔬 Validation Tests (What to Look For)When you run the execution stack, observe the standard terminal output closely:Phase A: Autonomous Multi-Step ChainingPythoninteract_with_agent("What's the current weather in Paris right now?")
-Expected Output: You will see the ⚙️ [Internal Execution Stack Tracking] fire off two distinct steps in succession. The model realizes it has a text string, translates it to geographic parameters via search_city_coordinates, and pipes those variables smoothly into get_current_weather.  Phase B: Context-Window OptimizationPythoninteract_with_agent("That sounds nice. Based on those conditions, would you recommend bringing an umbrella or sunglasses?")
-Expected Output: You will see a 💡 [Optimizer Note]: No tools triggered indicator. The agent successfully avoids hitting external infrastructure because it retains the relative state within its context parameters.  Phase C: Cross-Timeline Context SynthesisPythoninteract_with_agent("How about Tokyo?")
-interact_with_agent("Which city would be more comfortable for a walk right now?")
-Expected Output: The final prompt invokes zero external function architectures. The system synthesizes the historical state of Turn 1 (Paris) and Turn 3 (Tokyo) out of conversational history to deliver an intelligent, comparative verdict.  📈 Scalability Roadmap to Enterprise ProductionTo transition this portfolio project into a fully distributed microservice architecture, replace the notebook primitives with the following systems:State Persistence Layer: Replace the file's internal DATABASE_MOCK with Redis (for high-velocity session storage caching) or PostgreSQL (for durable chat message history tracking).Deterministic Routing Constraints: For strict business compliance paths, map the raw function tools into an orchestration graph framework like LangGraph, converting model guessing loops into rigid, verifiable state-machines.Enterprise Evaluation Pipelines: Implement testing harnesses (such as Ragas or TruLens) against historical evaluation logs to ensure prompt tweaks don't cause agent accuracy regressions across production endpoints.
+A production-oriented AI agent built with the Google GenAI SDK that demonstrates:
+
+* Stateful conversational memory
+* Autonomous multi-step tool chaining
+* Decoupled persistence architecture
+* Cloud API integration
+* Resource-efficient reasoning
+
+The project runs in:
+
+* Google Colab
+* Jupyter Notebook
+* AWS SageMaker
+* Local Python environments
+
+---
+
+# Why This Project Matters
+
+Many AI agent tutorials demonstrate basic tool calling but fail enterprise requirements because they suffer from:
+
+### Context Loss
+
+The agent forgets previous interactions and repeatedly requests information.
+
+### Resource Waste
+
+The agent repeatedly calls external APIs for information it already possesses.
+
+### Lack of State Persistence
+
+Conversation context disappears when the runtime session ends.
+
+This project demonstrates solutions to each of these problems.
+
+---
+
+# System Architecture
+
+```text
+┌──────────────────────────────────────┐
+│              User Input              │
+└──────────────────┬───────────────────┘
+                   │
+                   ▼
+┌──────────────────────────────────────┐
+│      Database Mock / State Layer     │
+│  (Simulates Redis or SQLite Storage) │
+└──────────────────┬───────────────────┘
+                   │
+                   ▼
+┌──────────────────────────────────────┐
+│          Gemini Runtime Layer        │
+│                                      │
+│  • Conversational Memory             │
+│  • Autonomous Tool Routing           │
+│  • Multi-Step Reasoning              │
+└──────────────────┬───────────────────┘
+                   │
+                   ▼
+┌──────────────────────────────────────┐
+│      External Infrastructure         │
+│                                      │
+│  • Weather APIs                      │
+│  • Geocoding Services                │
+│  • Future MCP Tools                  │
+└──────────────────────────────────────┘
+```
+
+---
+
+# Architectural Concepts
+
+## Stateful Memory
+
+The agent maintains conversational history across interactions.
+
+Example:
+
+User:
+
+```text
+What's the weather in Paris?
+```
+
+Later:
+
+```text
+Should I bring sunglasses?
+```
+
+The agent remembers the weather context without calling external services again.
+
+---
+
+## Autonomous Tool Chaining
+
+The model can execute multiple tools in sequence.
+
+Example workflow:
+
+```text
+City Name
+    ↓
+search_city_coordinates()
+    ↓
+Latitude / Longitude
+    ↓
+get_current_weather()
+    ↓
+Final Response
+```
+
+The user only provides a city name.
+
+The agent determines the remaining execution path automatically.
+
+---
+
+## Decoupled State Management
+
+The project includes a lightweight state repository:
+
+```python
+DATABASE_MOCK
+```
+
+This simulates production systems such as:
+
+* Redis
+* PostgreSQL
+* DynamoDB
+
+The pattern allows business state to persist independently of the LLM runtime.
+
+---
+
+# Validation Scenarios
+
+## Umbrella vs Sunglasses Test
+
+```python
+interact_with_agent(
+    "What's the weather in Paris right now?"
+)
+
+interact_with_agent(
+    "Would you recommend sunglasses?"
+)
+```
+
+Expected behavior:
+
+* First prompt triggers tools
+* Second prompt uses memory
+* No additional API calls
+
+---
+
+## Comparative Memory Test
+
+```python
+interact_with_agent("What's the weather in Paris?")
+interact_with_agent("How about Tokyo?")
+interact_with_agent(
+    "Which city is more comfortable for a walk?"
+)
+```
+
+Expected behavior:
+
+* Agent compares previously collected information
+* No additional weather requests required
+
+---
+
+# Technology Stack
+
+| Layer                   | Technology          |
+| ----------------------- | ------------------- |
+| Foundation Model        | Gemini 2.5 Flash    |
+| Agent Runtime           | Google GenAI SDK    |
+| Infrastructure API      | Open-Meteo          |
+| Development Environment | Jupyter Notebook    |
+| State Management        | Mock Database Layer |
+| Future Persistence      | Redis / PostgreSQL  |
+
+---
+
+# Installation
+
+## Install Dependencies
+
+```bash
+pip install google-genai requests
+```
+
+---
+
+## Configure API Key
+
+### Google Colab
+
+Add a secret named:
+
+```text
+GEMINI_API_KEY
+```
+
+Enable notebook access.
+
+### Local Environment
+
+```bash
+export GEMINI_API_KEY="your-key"
+```
+
+---
+
+# Running the Agent
+
+Execute the notebook:
+
+```text
+enterprise_decoupled_agent.ipynb
+```
+
+The notebook is organized into:
+
+1. Dependency Installation
+2. Tool Definitions
+3. Stateful Agent Initialization
+4. Validation Tests
+
+---
+
+# Scalability Roadmap
+
+## State Persistence
+
+Replace:
+
+```python
+DATABASE_MOCK
+```
+
+With:
+
+* Redis
+* PostgreSQL
+
+---
+
+## Deterministic Agent Routing
+
+Move from free-form tool calling to:
+
+* LangGraph
+* State Machines
+* Enterprise Workflow Graphs
+
+---
+
+## Evaluation Frameworks
+
+Integrate:
+
+* RAGAS
+* TruLens
+* Custom Benchmark Pipelines
+
+To validate future prompt and model updates.
+
+---
+
+# Future Improvements
+
+* Long-term memory storage
+* Redis-backed conversation persistence
+* Multi-user sessions
+* MCP tool integration
+* LangGraph orchestration
+* Production API deployment
+* Monitoring and observability
+
+---

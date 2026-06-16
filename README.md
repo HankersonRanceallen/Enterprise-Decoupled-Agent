@@ -13,14 +13,15 @@
                                          │ Injection of State
                                          ▼
                                          
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           GEMINI RUNTIME LAYER (LLM)                            │
-│                                                                                 │
-│   🧠 Context History Window           ⚙️ Internal Autonomous Routing           │
-│   (Maintains Turn-by-Turn Memory)      (Chains Search ──> Climate Metrics)      │
-└────────────────────────────────────────┬────────────────────────────────────────┘
-                                         │
-                                         ▼
+ ┌─────────────────────────────────────────────────────────────────────────────────┐
+ │                           GEMINI RUNTIME LAYER (LLM)                            │
+ │                                                                                 │
+ │   🧠 Context History Window           ⚙️ Internal Autonomous Routing           │
+ │   (Maintains Turn-by-Turn Memory)      (Chains Search ──> Climate Metrics)      │
+ └────────────────────────────────────────┬────────────────────────────────────────┘
+                                          │
+                                          ▼
+                                          
                   ┌──────────────────────────────────────────────┐
                   │        INFRASTRUCTURE / CLOUD TOOLS          │
                   │     (Executes APIs *only* when needed)       │

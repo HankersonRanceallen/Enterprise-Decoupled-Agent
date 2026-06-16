@@ -13,19 +13,19 @@
                                          │ Injection of State
                                          ▼
                                          
- ┌─────────────────────────────────────────────────────────────────────────────────┐
- │                           GEMINI RUNTIME LAYER (LLM)                            │
- │                                                                                 │
- │   🧠 Context History Window           ⚙️ Internal Autonomous Routing           │
- │   (Maintains Turn-by-Turn Memory)      (Chains Search ──> Climate Metrics)      │
- └────────────────────────────────────────┬────────────────────────────────────────┘
-                                          │
-                                          ▼
+  ┌─────────────────────────────────────────────────────────────────────────────────┐
+  │                           GEMINI RUNTIME LAYER (LLM)                            │
+  │                                                                                 │
+  │   🧠 Context History Window           ⚙️ Internal Autonomous Routing           │
+  │   (Maintains Turn-by-Turn Memory)      (Chains Search ──> Climate Metrics)      │
+  └────────────────────────────────────────┬────────────────────────────────────────┘
+                                           │
+                                           ▼
                                           
-                  ┌──────────────────────────────────────────────┐
-                  │        INFRASTRUCTURE / CLOUD TOOLS          │
-                  │     (Executes APIs *only* when needed)       │
-                  └──────────────────────────────────────────────┘
+                   ┌──────────────────────────────────────────────┐
+                   │        INFRASTRUCTURE / CLOUD TOOLS          │
+                   │     (Executes APIs *only* when needed)       │
+                   └──────────────────────────────────────────────┘
 
                   
 Key Architectural Validations Demonstrated:The Umbrella/Sunglasses Test: The agent retains conversational history natively. If asked about what to wear based on a previous weather tool execution, it draws from its internal context window rather than re-triggering the external API—saving compute power and avoiding rate limits.The Comparative Memory Test: The agent can manage multiple data nodes over a timeline (e.g., pulling metrics for Paris, then Tokyo) and perform cross-context comparative analysis natively without invoking any additional tool overhead.Decoupled System State: Implements a localized DATABASE_MOCK memory repository tracking transaction entities (last_city_searched), mimicking how an industrial microservice syncs with a Redis cache or an SQLite instance to ensure persistence beyond runtime engine lifecycles.🛠️ Tech Stack & ServicesCore Runtime Model: gemini-2.5-flashAgent Engine: Google GenAI Python SDK (google-genai)Infrastructure Interface: Open-Meteo Cloud System API (Keyless Geocoding & Climate Engine)Development Workspace: Jupyter Notebook / IPython Pipeline🚀 Getting Started (Notebook Setup)1. InstallationRun the following block inside your notebook to pull down dependencies:Bashpip install google-genai requests
